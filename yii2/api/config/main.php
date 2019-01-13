@@ -14,17 +14,30 @@ return [
     'modules' => [],
     'components' => [
         'request' => [
-            'csrfParam' => '_csrf-backend',
+            'parser' => [
+              'application/json ' => 'yii\web\JsonParser',
+              'text/xml' => 'yii\web\XmlParser'
+            ],
+        ],
+        'response' => [
+          'formatters' => [
+            'json' => [
+              'class' => 'yii\web\JsonResponseFormatter',
+              'prettyPrint'=> YII_DEBUG,
+              'encodeOptions'=> JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+            ],
+          ],
+
         ],
         'user' => [
             'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => false,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
-        'session' => [
-            // this is the name of the session cookie used for login on the backend
-            'name' => 'advanced-backend',
-        ],
+//        'session' => [
+//            // this is the name of the session cookie used for login on the backend
+//            'name' => 'advanced-backend',
+//        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -34,17 +47,19 @@ return [
                 ],
             ],
         ],
-        'errorHandler' => [
-            'errorAction' => 'site/error',
-        ],
-        /*
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing'=> true,
             'rules' => [
+              'auth' => 'site/login',
+              '<_c:[\w-]+>' => '<_c>/index',
+              '<_c:[\w-]+>/<id:\d+>' => '<_c>/view',
+              '<_c:[\w-]+>/<id:\d+>/<_a:[\w-]+>' => '<_c>/<_a>',
             ],
         ],
-        */
+
     ],
     'params' => $params,
 ];
