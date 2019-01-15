@@ -16,17 +16,36 @@ use Yii;
  */
 class Token extends \yii\db\ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'token';
-    }
+  public static function tableName()
+  {
+    return 'tokens';
+  }
+  /**
+   * @inheritdoc
+   */
+  public function rules()
+  {
+    return [
+      [['user_id', 'token'], 'required'],
+      [['user_id'], 'integer'],
+      [['expired_at'], 'safe'],
+      [['token'], 'string', 'max' => 255],
+      [['id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id' => 'id']],
+    ];
+  }
 
-    public function generateToken($expire) {
+  public function getId0()
+  {
+    return $this->hasOne(User::className(), ['id' => 'id']);
+  }
 
-      $this->expired_at = $expire;
-      $this->token = Yii::$app->security->generateRandomString();
-    }
+  public static function find()
+  {
+    return new TokenQuery(get_called_class());
+  }
+  public function generateToken($expire)
+  {
+    $this->expired_at = $expire;
+    $this->token = \Yii::$app->security->generateRandomString();
+  }
 }

@@ -52,14 +52,11 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'enableStrictParsing'=> true,
-            'rules' => [
-              'auth' => 'site/login',
-              '<_c:[\w-]+>' => '<_c>/index',
-              '<_c:[\w-]+>/<id:\d+>' => '<_c>/view',
-              '<_c:[\w-]+>/<id:\d+>/<_a:[\w-]+>' => '<_c>/<_a>',
-            ],
+          'rules' => [
+            ['class' => 'yii\rest\UrlRule', 'controller' => ['user']],
+            'POST site' => 'site/index',
+          ],
         ],
-
     ],
     'params' => $params,
 ];
